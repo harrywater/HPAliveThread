@@ -8,22 +8,8 @@
 
 #import "HPAliveThread.h"
 
-@interface HPThread:NSThread
-
-@end
-
-@implementation HPThread
-
-- (void)dealloc
-{
-    NSLog(@"%s",__func__);
-    
-}
-
-@end
-
 @interface HPAliveThread()
-@property(nonatomic,strong)HPThread* thread;
+@property(nonatomic,strong)NSThread* thread;
 @property(nonatomic,assign)BOOL isStoped;
 @end
 
@@ -49,7 +35,7 @@ void abserverRunLoopActivityFun(CFRunLoopObserverRef observer, CFRunLoopActivity
     if (self) {
         self.isStoped = NO;
         __weak typeof(self)weakSelf = self;
-        _thread = [[HPThread alloc]initWithBlock:^{
+        _thread = [[NSThread alloc]initWithBlock:^{
             //创建一个观察者
             CFRunLoopObserverRef abserver = CFRunLoopObserverCreate(kCFAllocatorDefault, kCFRunLoopEntry|kCFRunLoopExit, YES, 0, abserverRunLoopActivityFun, NULL);
             //添加观察者
