@@ -22,7 +22,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    self.title = @"保活线程的使用";
     self.aliveThread = [[HPAliveThread alloc]init];
     
 }
