@@ -37,6 +37,7 @@ void abserverRunLoopActivityFun(CFRunLoopObserverRef observer, CFRunLoopActivity
         __weak typeof(self)weakSelf = self;
         _thread = [[NSThread alloc]initWithBlock:^{
             //创建一个观察者
+            CFRunLoopSourceContext
             CFRunLoopObserverRef abserver = CFRunLoopObserverCreate(kCFAllocatorDefault, kCFRunLoopEntry|kCFRunLoopExit, YES, 0, abserverRunLoopActivityFun, NULL);
             //添加观察者
             CFRunLoopAddObserver(CFRunLoopGetCurrent(), abserver, kCFRunLoopDefaultMode);
