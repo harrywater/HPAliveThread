@@ -10,7 +10,7 @@
 
 @interface HPAliveThread()
 @property(nonatomic,strong)NSThread* thread;
-@property(nonatomic,assign)BOOL isStoped;
+//@property(nonatomic,assign)BOOL isStoped;
 @end
 
 @implementation HPAliveThread
@@ -33,23 +33,30 @@ void abserverRunLoopActivityFun(CFRunLoopObserverRef observer, CFRunLoopActivity
 {
     self = [super init];
     if (self) {
-        self.isStoped = NO;
-        __weak typeof(self)weakSelf = self;
+//        self.isStoped = NO;
+//        __weak typeof(self)weakSelf = self;
         _thread = [[NSThread alloc]initWithBlock:^{
             //创建一个观察者
-            CFRunLoopSourceContext
             CFRunLoopObserverRef abserver = CFRunLoopObserverCreate(kCFAllocatorDefault, kCFRunLoopEntry|kCFRunLoopExit, YES, 0, abserverRunLoopActivityFun, NULL);
             //添加观察者
             CFRunLoopAddObserver(CFRunLoopGetCurrent(), abserver, kCFRunLoopDefaultMode);
             CFRelease(abserver);
             
             //开启runLoop
-            NSRunLoop* loop = [NSRunLoop currentRunLoop];
-            [loop addPort:[NSPort port] forMode:NSDefaultRunLoopMode];
+//            NSRunLoop* loop = [NSRunLoop currentRunLoop];
+//            [loop addPort:[NSPort port] forMode:NSDefaultRunLoopMode];
+//
+//            while (weakSelf && !weakSelf.isStoped) {
+//                [loop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
+//            }
             
-            while (weakSelf && !weakSelf.isStoped) {
-                [loop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
-            }
+            
+            //简易代码 开启runLoop
+            CFRunLoopSourceContext sourceContext  ={0};//需要初始化
+            CFRunLoopSourceRef source = CFRunLoopSourceCreate(kCFAllocatorDefault, 0, &sourceContext);
+            CFRunLoopAddSource(CFRunLoopGetCurrent(), source, kCFRunLoopDefaultMode);
+            CFRunLoopRun();
+            //CFRunLoopRunInMode(kCFRunLoopDefaultMode, 1.0e10, false);
         }];
     }
     return self;
@@ -80,7 +87,7 @@ void abserverRunLoopActivityFun(CFRunLoopObserverRef observer, CFRunLoopActivity
 
 - (void)__stop
 {
-    self.isStoped = YES;
+//    self.isStoped = YES;
     //停止runLoop 线程保活结束
     CFRunLoopStop(CFRunLoopGetCurrent());
     self.thread = nil;
