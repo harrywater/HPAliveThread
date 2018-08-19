@@ -48,16 +48,15 @@ void abserverRunLoopActivityFun(CFRunLoopObserverRef observer, CFRunLoopActivity
 //            [loop addPort:[NSPort port] forMode:NSDefaultRunLoopMode];
 //
 //            while (weakSelf && !weakSelf.isStoped) {
-//                [loop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
+//                [loop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];//这个相当于CFRunLoopRunInMode(kCFRunLoopDefaultMode, 1.0e10, YES);也就是执行完loop里面的sources就会推出loop
 //            }
-            
             
             //简易代码 开启runLoop
             CFRunLoopSourceContext sourceContext  ={0};//需要初始化
             CFRunLoopSourceRef source = CFRunLoopSourceCreate(kCFAllocatorDefault, 0, &sourceContext);
             CFRunLoopAddSource(CFRunLoopGetCurrent(), source, kCFRunLoopDefaultMode);
             CFRunLoopRun();
-            //CFRunLoopRunInMode(kCFRunLoopDefaultMode, 1.0e10, false);
+            //CFRunLoopRunInMode(kCFRunLoopDefaultMode, 1.0e10, false);等价
         }];
     }
     return self;
