@@ -55,8 +55,13 @@ void abserverRunLoopActivityFun(CFRunLoopObserverRef observer, CFRunLoopActivity
             CFRunLoopSourceContext sourceContext  ={0};//需要初始化
             CFRunLoopSourceRef source = CFRunLoopSourceCreate(kCFAllocatorDefault, 0, &sourceContext);
             CFRunLoopAddSource(CFRunLoopGetCurrent(), source, kCFRunLoopDefaultMode);
+            CFRelease(source);
             CFRunLoopRun();
             //CFRunLoopRunInMode(kCFRunLoopDefaultMode, 1.0e10, false);等价
+            
+            //线程即将挂掉...
+            // RunLoop退出后移除自定义基于端口的源
+            CFRunLoopRemoveSource(CFRunLoopGetCurrent(), source, kCFRunLoopDefaultMode);
         }];
     }
     return self;
@@ -74,7 +79,7 @@ void abserverRunLoopActivityFun(CFRunLoopObserverRef observer, CFRunLoopActivity
 - (void)stop
 {
     if (!self.thread) return;
-    [self performSelector:@selector(__stop) onThread:self.thread withObject:nil waitUntilDone:YES];
+    [self performSelector:@selector(__stop) onThread:self.thread withObject:nil waitUntilDone:YES];//注意YES 要等thread先停止后在销毁
 }
 
 - (void)dealloc
